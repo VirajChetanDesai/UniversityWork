@@ -13,7 +13,7 @@ struct queue{
 typedef struct queue queue;
 
 void enqueue(queue *q,int element){
-    if(q->end != MAX){
+    if(q->end == MAX){
         printf("Queue Full");
         return ;
     }else{
@@ -29,6 +29,7 @@ int dequeue(queue *q){
         return -1;
     }else{
         int element = q->array[q->start++];
+        return element;
     }
 }
 
@@ -36,16 +37,16 @@ void BFS(queue *q,int length){
         int currentVertex = dequeue(q);
         printf("%d",vertex[currentVertex]);
         for(int i = 0 ; i<length; i++){
-            if(graph[currentVertex][i]==1 && visited[i] != 0){
+            if(graph[currentVertex][i]==1 && visited[i] == 0){
                 visited[i] = 1;
                 enqueue(q,i);
             }
         }
         if(q->start == q->end) return;
-        bfs(q,length);
+        BFS(q,length);
 }
 
-void main(){
+int main(){
     queue *q = (queue*)calloc(1,sizeof(queue));
     q->start = 0;
     q->end = 0;
@@ -66,5 +67,6 @@ void main(){
     }  
     visited[min_index] = 1;
     enqueue(q,min_index);
-    bfs(q,length);
+    BFS(q,length);
+    return 0;
 }
