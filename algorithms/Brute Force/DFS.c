@@ -9,7 +9,7 @@ int vertex[max_int];
 void dfs(int index , int length){
     printf("%d",vertex[index]);
     for(int i = 0 ; i < length ; i++){
-        if(i!=index && visited[i]==0){
+        if(i!=index && visited[i]==0 && graph[index][i] == 1){
             visited[i] = 1;
             dfs(i,length);
         }
