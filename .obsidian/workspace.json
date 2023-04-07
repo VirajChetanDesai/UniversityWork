@@ -1,0 +1,150 @@
+{
+  "main": {
+    "id": "dff0b6f3cb8292c2",
+    "type": "split",
+    "children": [
+      {
+        "id": "dca4ae2f8cbba2d9",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "2c71afaef578ad5e",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "d4666a0b02c84e5f",
+    "type": "split",
+    "children": [
+      {
+        "id": "86493b1b634c8b66",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c4133b7127582830",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "3bd3ebd8ae1605d7",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "1a97781c791cf1bf",
+            "type": "leaf",
+            "state": {
+              "type": "starred",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "1049a3410f5e0f4a",
+    "type": "split",
+    "children": [
+      {
+        "id": "a11853847053f674",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "d48b05ef440c0b1e",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "c3a72442065427bf",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "52b27872b59005de",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "fe108227a5292d35",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "2c71afaef578ad5e",
+  "lastOpenFiles": [
+    "Untitled.canvas",
+    "README.md",
+    "2023-04-06.md",
+    "algorithms/daalab.pdf",
+    "Embedded Systems/Lab -1 Introduction to Keil/Introduction to Keil.pdf",
+    "algorithms/Brute Force/Brute Force.md"
+  ]
+}
