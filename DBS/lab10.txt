@@ -1,0 +1,92 @@
+lab9 q8)
+declare
+old_salary Instructor.salary%TYPE := 0; 
+new_salary Instructor.salary%TYPE := 0;
+dept_budget Department.budget%TYPE :=0;
+BEGIN
+savepoint r1;
+select sum(salary) into old_salary from Instructor where dept_name = 'Biology' group by ID;
+update instructor set salary = salary + (salary  * 20/100) where dept_name = 'Biology';
+select sum(salary) into new_salary from Instructor where dept_name = 'Biology' group by ID;
+select budget into dept_budget from department where dept_name = 'Biology';
+if (new_salary-old_salary > dept_budget) then
+dbms_output.put_line('Update failed');
+rollback to savepoint r1;
+else
+dbms_output.put_line('Successfully Updated');
+update budget set budget = budget - (old_salary - new_salary) where dept_name = 'Biology';
+end if;
+commit;
+end;
+
+lab10 q1)
+create or replace procedure p is
+begin
+dbms_output.put_line('Hello World');
+end;
+/
+
+declare
+begin
+p();
+end;
+/
+
+select name into dpt_name from instructor where dept_name = dpt_name_in;
+
+Lab10 q2)
+
+create or replace procedure printer(
+dname department.dept_name%TYPE
+) is
+begin
+declare
+cursor c(dname instructor.dept_name%TYPE) is select i.name,c.title from instructor i,course c where i.dept_name = dname and i.dept_name = c.dept_name;
+begin
+for tmp in c(dname)
+loop
+dbms_output.put_line(tmp.name||' '||tmp.title);
+end loop;
+end;
+end;
+/
+
+declare
+dname department.dept_name%TYPE;
+begin
+dname := '&d';
+printer(dname);
+end;
+/
+
+Lab10 q3)
+
+create or replace procedure printerq2(
+dname department.dept_name%TYPE
+) is
+begin
+declare
+cursor c(dname instructor.dept_name%TYPE) is select dept_name,MAX(id1) as students from
+(select dept_name, t.course_id as csr,COUNT(t.id) as id1 from takes t, course c where t.course_id = c.course_id and c.dept_name = dname group by dept_name,t.course_id)
+group by dept_name;
+begin
+for tmp in c(dname)
+loop
+dbms_output.put_line(tmp.dept_name||' '||tmp.students);
+end loop;
+end;
+end;
+/
+
+declare
+dname department.dept_name%TYPE;
+cursor c1 is select dept_name from department;
+begin
+for tmp in c1
+loop
+printerq2(tmp.dept_name);
+end loop;
+end;
+/
+
+

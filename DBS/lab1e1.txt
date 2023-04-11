@@ -1,0 +1,47 @@
+SQL> create table STUDENT(
+  2  reg_no number(5),
+  3  stu_name varchar(20),
+  4  stu_age number(5),
+  5  stu_dob date,
+  6  subject1_marks number(4,2),
+  7  subject2_marks number(4,2),
+  8  subject3_marks number(4,1));
+
+Table created.
+
+SQL> insert into STUDENT values(1,'Viraj',11223,'03-jul-88',80,90,98);
+
+1 row created.
+
+SQL> select * from STUDENT;
+
+    REG_NO STU_NAME                STU_AGE STU_DOB   SUBJECT1_MARKS
+---------- -------------------- ---------- --------- --------------
+SUBJECT2_MARKS SUBJECT3_MARKS
+-------------- --------------
+         1 Viraj                     11223 03-JUL-88             80
+            90             98
+
+SQL> delete from STUDENT where STU_NAME='Viraj';
+
+1 row deleted.
+
+SQL> insert into STUDENT values(1,'Viraj',19,'01-jan-04',85,99,81);
+
+1 row created.
+
+SQL> insert into STUDENT values(2,'Akshay',19,'05-mar-03',90,97,85);
+
+1 row created.
+
+SQL> select * from STUDENT;
+
+    REG_NO STU_NAME                STU_AGE STU_DOB   SUBJECT1_MARKS
+---------- -------------------- ---------- --------- --------------
+SUBJECT2_MARKS SUBJECT3_MARKS
+-------------- --------------
+         1 Viraj                        19 01-JAN-04             85
+            99             81
+
+         2 Akshay                       19 05-MAR-03             90
+            97             85

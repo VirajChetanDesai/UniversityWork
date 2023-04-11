@@ -1,0 +1,132 @@
+SQL> create table employee (
+  2  emp_no INT,
+  3  emp_name varchar(20),
+  4  emp_address varchar(50));
+
+Table created.
+
+SQL> insert into employee values (1,'Viraj','Dombivili West Mumbai');
+
+1 row created.
+
+SQL> insert into employee values(2,'Sanjay','Manipal Udupi');
+
+1 row created.
+
+SQL> insert into employee values(3,'Akshay','Ghatkopar Mumbai');
+
+1 row created.
+
+SQL> insert into employee values(4,'Krishna','Lucknow UP');
+
+1 row created.
+
+SQL> insert into employee values(5,'Nagesh','Nagpur Mahahrashtra');
+
+1 row created.
+
+SQL> select emp_name from employee;
+
+EMP_NAME
+--------------------
+Viraj
+Sanjay
+Akshay
+Krishna
+Nagesh
+
+SQL> select * from employee where emp_address='Manipal Udupi';
+
+    EMP_NO EMP_NAME
+---------- --------------------
+EMP_ADDRESS
+--------------------------------------------------
+         2 Sanjay
+Manipal Udupi
+
+SQL> Alter table employee add(emp_salary INT);
+
+Table altered.
+
+SQL> Update employee set emp_salary=5000 where emp_no=1;
+
+1 row updated.
+
+SQL> Update employee set emp_salary=6000 where emp_no=2;
+
+1 row updated.
+
+SQL> Update employee set emp_salary=4000 where emp_no=3;
+
+1 row updated.
+
+SQL> Update employee set emp_salary=5000 where emp_no=4 or emp_no = 5;
+
+2 rows updated.
+
+    EMP_NO EMP_NAME
+---------- --------------------
+EMP_ADDRESS                                        EMP_SALARY
+-------------------------------------------------- ----------
+         1 Viraj
+Dombivili West Mumbai                                    5000
+
+         2 Sanjay
+Manipal Udupi                                            6000
+
+         3 Akshay
+Ghatkopar Mumbai                                         4000
+
+
+    EMP_NO EMP_NAME
+---------- --------------------
+EMP_ADDRESS                                        EMP_SALARY
+-------------------------------------------------- ----------
+         4 Krishna
+Lucknow UP                                               5000
+
+         5 Nagesh
+Nagpur Mahahrashtra                                      5000
+
+SQL> desc employee;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ EMP_NO                                             NUMBER(38)
+ EMP_NAME                                           VARCHAR2(20)
+ EMP_ADDRESS                                        VARCHAR2(50)
+ EMP_SALARY                                         NUMBER(38)
+
+SQL> delete from employee where emp_address='Manipal Udupi';
+
+1 row deleted.
+
+SQL> select * from employee;
+
+    EMP_NO EMP_NAME
+---------- --------------------
+EMP_ADDRESS                                        EMP_SALARY
+-------------------------------------------------- ----------
+         1 Viraj
+Dombivili West Mumbai                                    5000
+
+         3 Akshay
+Ghatkopar Mumbai                                         4000
+
+         4 Krishna
+Lucknow UP                                               5000
+
+
+    EMP_NO EMP_NAME
+---------- --------------------
+EMP_ADDRESS                                        EMP_SALARY
+-------------------------------------------------- ----------
+         5 Nagesh
+Nagpur Mahahrashtra                                      5000
+
+SQL> Rename employee to employee1;
+
+Table renamed.
+
+SQL> drop table employee1;
+
+Table dropped.

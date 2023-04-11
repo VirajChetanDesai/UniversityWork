@@ -1,0 +1,83 @@
+ create TABLE stu_delete(
+  ID VARCHAR2(5),
+  NAME VARCHAR2(20),
+  DEPT_NAME VARCHAR2(20),
+  TOT_CRED NUMBER(3));
+
+CREATE OR REPLACE trigger stu_trigger
+BEFORE insert or update or DELETE ON student
+FOR EACH ROW
+BEGIN
+insert into stu_delete(ID,NAME,DEPT_NAME,TOT_CRED) values(:OLD.ID,
+:OLD.NAME,
+:OLD.DEPT_NAME,
+:OLD.TOT_CRED);
+END;
+/
+
+1)
+
+create table takes_delete(
+  Time_Of_Change TIMESTAMP WITH TIME ZONE,
+  A VARCHAR2(20),
+  B VARCHAR2(20),
+  C VARCHAR2(20),
+  D VARCHAR2(20),
+  E NUMBER(4),
+  F VARCHAR2(20));
+
+CREATE OR REPLACE TRIGGER takes_trigger
+  before delete on takes
+  for each row
+  begin
+  insert into takes_delete values(CURRENT_TIMESTAMP,
+  :OLD.ID,
+  :OLD.COURSE_ID,
+  :OLD.SEC_ID,
+  :OLD.SEMESTER,
+  :OLD.YEAR,
+  :OLD.GRADE);
+ END;
+2)
+
+create table instructor_delete(
+  ID VARCHAR2(5),
+  NAME VARCHAR2(20),
+  DEPT_NAME VARCHAR2(20),
+  SALARY NUMBER(8,2));
+
+CREATE OR REPLACE TRIGGER instructor_trigger
+  before update on instructor
+  for each row
+  begin
+  insert into instructor_delete values(
+  :OLD.ID,
+  :OLD.NAME,
+  :OLD.DEPT_NAME,
+  :OLD.SALARY);
+ END;
+ /
+
+3)
+
+
+
+CREATE OR REPLACE TRIGGER check_instructor
+BEFORE INSERT ON Instructor
+FOR EACH ROW
+DECLARE
+  dept_budget NUMBER(10,2);
+BEGIN
+  SELECT budget INTO dept_budget FROM Department WHERE dept_name = :NEW.dept_name;
+  IF NOT REGEXP_LIKE(:NEW.name, '^[[:alpha:]]+$') THEN
+    dbms_output.put_line('Invalid instructor name');
+  END IF;
+
+  IF :NEW.salary <= 0 THEN
+    dbms_output.put_line('Invalid instructor salary');
+  END IF;
+  IF (SELECT SUM(salary) FROM Instructor WHERE dept_name = :NEW.dept_name) + :NEW.salary > dept_budget THEN
+    dbms_output.put_line('Salary exceeds department budget');
+  END IF;
+END;
+/

@@ -1,0 +1,99 @@
+create table client_master(
+client_no int primary key,
+name varchar(20),
+address varchar(20),
+bal_due number(20,0)
+);
+
+create table audit_client(
+client_no int,
+name varchar(20),
+bal_due number(20,0),
+operation varchar(30),
+userid number(30,0),
+opdate TIMESTAMP WITH TIME ZONE
+);
+
+
+create or replace trigger client_delete
+before delete on client_master
+for each row
+begin
+INSERT INTO audit_client VALUES(
+:OLD.client_no,
+:OLD.name,
+:OLD.bal_due,
+'DELETE',
+1440,
+CURRENT_TIMESTAMP);
+END;
+
+
+
+create or replace trigger client_update
+before update on client_master
+for each row
+begin
+INSERT INTO audit_client VALUES(
+:OLD.client_no,
+:OLD.name,
+:OLD.bal_due,
+'UPDATE',
+1440,
+CURRENT_TIMESTAMP);
+END;
+
+INSERT INTO client_master VALUES(123,'Viraj','Dombivali',20000);
+INSERT INTO client_master VALUES(124,'Himanshu','Lucknow',30000);
+INSERT INTO client_master VALUES(125,'Kshitij','Bengal',40000);
+INSERT INTO client_master VALUES(126,'Sanjay','Udupi',90000);
+
+delete from client_master where client_no = 123;
+update client_master set bal_due = 123000 where client_no = 126;
+
+ CLIENT_NO NAME                    BAL_DUE OPERATION
+---------- -------------------- ---------- ------------------------------
+    USERID
+----------
+OPDATE
+---------------------------------------------------------------------------
+       123 Viraj                     20000 DELETE
+      1440
+11-APR-23 09.31.10.000000 AM +05:30
+
+       126 Sanjay                    90000 UPDATE
+      1440
+11-APR-23 09.32.12.904000 AM +05:30
+
+ CLIENT_NO NAME                    BAL_DUE OPERATION
+
+5)
+
+create view advisor_student as select advisor.s_id,advisor.i_id,student.name s_name, instructor.name i_name from advisor,student,instructor where advisor.s_id = student.id and advisor.i_id = instructor.id;
+
+create or replace trigger advisor_delete
+instead of delete on advisor_student
+for each row
+begin
+delete from advisor where s_id = :OLD.s_id and i_id = :OLD.i_id;
+end;
+
+SQL> delete from advisor_student where s_id = 98765;
+
+1 row deleted.
+
+SQL> select * from advisor;
+
+S_ID  I_ID
+----- -----
+00128 45565
+12345 10101
+23121 76543
+44553 22222
+45678 22222
+76543 45565
+76653 98345
+
+7 rows selected.
+
+

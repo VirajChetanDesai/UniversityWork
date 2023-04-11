@@ -1,0 +1,115 @@
+1)
+declare
+cursor c1 (dname instructor.dept_name%TYPE) is select * from instructor where dept_name = dname for update;
+r_id instructor.id%TYPE;
+r_date date;
+r_amt int;
+new_amt int;
+dept_input instructor.dept_name%TYPE;
+begin
+dept_input := '&s';
+for tmp in c1(dept_input)
+LOOP
+r_id := tmp.id;
+select salary into r_amt from instructor where id = r_id;
+r_date:= current_date;
+update instructor set salary = 1.05 * salary where id=r_id;
+select salary into new_amt from instructor where id = r_id;
+r_amt := new_amt - r_amt;
+insert into salary_raise values (r_id,r_date,r_amt);
+end loop;
+end;
+
+2)
+declare
+cursor c1 is select id,name,dept_name,tot_cred from student order by tot_cred asc;
+r_id student.id%TYPE;
+begin
+for tmp in c1
+LOOP
+r_id := tmp.id;
+dbms_output.put_line(tmp.id||'||'||tmp.name||'||'||tmp.dept_name||'	||'||tmp.tot_cred);
+exit when c1%rowcount = 10;
+end loop;
+end;
+
+3)
+declare
+cursor c1 is select s.course_id,c.title,c.dept_name,c.credits,i.name,s.building,s.room_number,s.time_slot_id,count(distinct(t.id)) as totno from takes t,instructor i,section s,course c where s.course_id = c.course_id and c.dept_name=i.dept_name and c.course_id = t.course_id group by s.course_id,c.title,c.dept_name,c.credits,i.name,s.building,s.room_number,s.time_slot_id;
+begin
+for tmp in c1
+loop
+dbms_output.put_line(tmp.course_id||' '||tmp.title||' '||tmp.dept_name||' '||tmp.credits||' '||tmp.name||' '||tmp.building||' '||tmp.room_number||' '||tmp.time_slot_id||' '||tmp.totno);
+end loop;
+end;
+
+4)
+declare
+cursor c1 is select s.id from student s,takes t where t.course_id = 'CS101' and s.id = t.id;
+begin
+for tmp in c1
+loop
+dbms_output.put_line(tmp.id);
+delete from student s where id = (select s.id from student s,takes t where t.course_id = 'CS101' and s.id = t.id and s.tot_cred < 30);
+if sql%found then
+dbms_output.put_line('Delete Successful');
+else
+dbms_output.put_line('Delete Unsuccessful');
+end if;
+end loop;
+end;
+
+declare
+cursor c1 is select s.id from student s;
+begin
+for tmp in c1
+loop
+dbms_output.put_line(tmp.id);
+delete from student s where id = (select s.id from student s,takes t where t.course_id = 'CS101' and s.id = t.id and s.tot_cred < 30);
+if sql%found then
+dbms_output.put_line('Delete Successful');
+else
+dbms_output.put_line('Delete Unsuccessful');
+end if;
+end loop;
+end;
+
+6)
+declare
+cursor c1 (dpt instructor.dept_name%TYPE) is select name from instructor where dept_name = dpt;
+dept instructor.dept_name%TYPE;
+begin
+dept := '&s';
+for tmp in c1(dept)
+loop
+dbms_output.put_line(tmp.name);
+end loop;
+end; 
+Enter value for s: History
+old   5: dept := '&s';
+new   5: dept := 'History';
+El Said
+Califieri
+
+PL/SQL procedure successfully completed.
+
+7)
+declare
+cursor c1 (cid course.course_id%TYPE) is select s.name student,i.name instructor from student s,course c,advisor a,instructor i where s.id = a.s_id and i.id = a.i_id and c.dept_name = i.dept_name and c.course_id = cid;
+crs course.course_id%TYPE;
+begin
+crs := '&d';
+for tmp in c1(crs)
+LOOP
+dbms_output.put_line(tmp.student||' '||tmp.instructor);
+end loop;
+end;
+
+Enter value for d: CS-101
+old   5: crs := '&d';
+new   5: crs := 'CS-101';
+ZhangKatz
+ShankarSrinivasan
+BrownKatz
+
+PL/SQL procedure successfully completed.

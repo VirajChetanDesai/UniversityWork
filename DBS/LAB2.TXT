@@ -1,0 +1,522 @@
+SQL> create table Employee (
+  2  EmpNo INT PRIMARY KEY,
+  3  EmpName VARCHAR(20) NOT NULL,
+  4  Gender CHAR(1) NOT NULL,
+  5  Salary INT NOT NULL,
+  6  Address VARCHAR(40) NOT NULL,
+  7  Dno INT);
+
+Table created.
+
+SQL> Alter table Employee add constraint Gender check (Gender in ('M','F'));
+
+Table altered.
+
+SQL> create table Department(
+  2  DeptNo INT PRIMARY KEY,
+  3  DeptName VARCHAR(30) UNIQUE,
+  4  Location VARCHAR(40));
+
+Table created.
+
+SQL> alter table Employee add foreign key(Dno) references Department(DeptNo);
+Table altered.
+
+SQL> insert into Department values (1,'Computer Science','Manipal');
+
+1 row created.
+
+SQL> insert into Department values (2,'Mechanical','Manipal');
+
+1 row created.
+
+SQL> insert into Department values (3,'Electrical','Manipal');
+1 row created.
+SQL> insert into Department values (4,'Computer Science','Manipal');
+insert into Department values (4,'Computer Science','Manipal')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (C08.SYS_C0013024) violated
+
+
+SQL> insert into Employee values(1,'Viraj','M',50000,'Manipal',1);
+1 row created.
+
+SQL> insert into Employee values(2,'Sanjay','G',50000,'Manipal',1);
+insert into Employee values(2,'Sanjay','G',50000,'Manipal',1)
+*
+ERROR at line 1:
+ORA-02290: check constraint (C08.GENDER) violated
+
+SQL> insert into Employee values(2,'Sanjay','M',50000,'Manipal',1);
+
+1 row created;
+SQL> insert into Employee values(3,'Akshay','M',60000,'Manipal',3);
+
+1 row created.
+
+SQL> delete from Department where DeptNo = 3;
+delete from Department where DeptNo = 3
+*
+ERROR at line 1:
+ORA-02292: integrity constraint (C08.SYS_C0013053) violated - child record
+found
+
+SQL> alter table employee drop column Dno;
+
+Table altered.
+
+SQL> alter table employee add Dno INT;
+
+Table altered.
+
+SQL> alter table employee add constraint fk foreign key(Dno) references department(DeptNo) on delete cascade;
+
+Table altered.
+
+SQL> alter table employee MODIFY salary INT default 8000;
+
+Table altered.
+
+1-8 done-----------
+
+9)SQL> select name,DEPT_NAME from Student;
+
+NAME                 DEPT_NAME
+-------------------- --------------------
+Zhang                Comp. Sci.
+Shankar              Comp. Sci.
+Brandt               History
+Chavez               Finance
+Peltier              Physics
+Levy                 Physics
+Williams             Comp. Sci.
+Sanchez              Music
+Snow                 Physics
+Brown                Comp. Sci.
+Aoi                  Elec. Eng.
+
+NAME                 DEPT_NAME
+-------------------- --------------------
+Bourikas             Elec. Eng.
+Tanaka               Biology
+
+13 rows selected.
+
+10)
+SQL> select ID,name from instructor;
+
+ID    NAME
+----- --------------------
+10101 Srinivasan
+12121 Wu
+15151 Mozart
+22222 Einstein
+32343 El Said
+33456 Gold
+45565 Katz
+58583 Califieri
+76543 Singh
+76766 Crick
+83821 Brandt
+
+ID    NAME
+----- --------------------
+98345 Kim
+
+12 rows selected.
+
+11)
+SQL> select title from Course where credits = 3;
+
+TITLE
+--------------------------------------------------
+Computational Biology
+Robotics
+Image Processing
+Database System Concepts
+Intro. to Digital Systems
+Investment Banking
+World History
+Music Video Production
+
+8 rows selected.
+
+12)
+SQL> select ID,Course_id,title from Student,Course where ID = 12345;
+
+ID    COURSE_I TITLE
+----- -------- --------------------------------------------------
+12345 BIO-101  Intro. to Biology
+12345 BIO-301  Genetics
+12345 BIO-399  Computational Biology
+12345 CS-101   Intro. to Computer Science
+12345 CS-190   Game Design
+12345 CS-315   Robotics
+12345 CS-319   Image Processing
+12345 CS-347   Database System Concepts
+12345 EE-181   Intro. to Digital Systems
+12345 FIN-201  Investment Banking
+12345 HIS-351  World History
+
+ID    COURSE_I TITLE
+----- -------- --------------------------------------------------
+12345 MU-199   Music Video Production
+12345 PHY-101  Physical Principles
+
+13 rows selected.
+
+13)
+SQL> select name from instructor where salary > 40000 and salary < 90000;
+
+NAME
+--------------------
+Srinivasan
+El Said
+Gold
+Katz
+Califieri
+Singh
+Crick
+Kim
+
+8 rows selected.
+
+14)diy
+
+15)
+SQL> select name,title,year,building from STUDENT,COURSE,TAKES,CLASSROOM where room_number = 303;
+
+no rows selected
+
+16)
+select name,course_id from STUDENT,TAKES where year = 2015;
+
+no rows selected
+
+17)diy
+
+18)SQL> select name from instructor where SUBSTR(dept_name,0) like '%ch%';
+
+no rows selected
+
+19)SQL> select name,LENGTH(name) from student;
+
+NAME                 LENGTH(NAME)
+-------------------- ------------
+Zhang                           5
+Shankar                         7
+Brandt                          6
+Chavez                          6
+Peltier                         7
+Levy                            4
+Williams                        8
+Sanchez                         7
+Snow                            4
+Brown                           5
+Aoi                             3
+
+NAME                 LENGTH(NAME)
+-------------------- ------------
+Bourikas                        8
+Tanaka                          6
+
+13 rows selected.
+
+20)SQL> select dept_name,SUBSTR(dept_name,4,3) from course;
+
+DEPT_NAME            SUBSTR(DEPT_
+-------------------- ------------
+Biology              log
+Biology              log
+Biology              log
+Comp. Sci.           p.
+Comp. Sci.           p.
+Comp. Sci.           p.
+Comp. Sci.           p.
+Comp. Sci.           p.
+Elec. Eng.           c.
+Finance              anc
+History              tor
+
+DEPT_NAME            SUBSTR(DEPT_
+-------------------- ------------
+Music                ic
+Physics              sic
+
+13 rows selected.
+
+21)
+SQL> select UPPER(name) from instructor;
+
+UPPER(NAME)
+--------------------
+SRINIVASAN
+WU
+MOZART
+EINSTEIN
+EL SAID
+GOLD
+KATZ
+CALIFIERI
+SINGH
+CRICK
+BRANDT
+
+UPPER(NAME)
+--------------------
+KIM
+
+12 rows selected.
+
+22)
+SQL> select NVL(dept_name,0) from student;
+
+NVL(DEPT_NAME,0)
+--------------------
+Comp. Sci.
+Comp. Sci.
+History
+Finance
+Physics
+Physics
+Comp. Sci.
+Music
+Physics
+Comp. Sci.
+Elec. Eng.
+
+NVL(DEPT_NAME,0)
+--------------------
+Elec. Eng.
+Biology
+
+13 rows selected.
+
+23)
+SQL> select salary,ROUND(salary/3) from instructor;
+
+    SALARY ROUND(SALARY/3)
+---------- ---------------
+     65000           21667
+     90000           30000
+     40000           13333
+     95000           31667
+     60000           20000
+     87000           29000
+     75000           25000
+     62000           20667
+     80000           26667
+     72000           24000
+     92000           30667
+
+    SALARY ROUND(SALARY/3)
+---------- ---------------
+     80000           26667
+
+12 rows selected.
+
+24)
+SQL> select TO_CHAR(dob,'DD-MON-YYYY') from student;
+
+TO_CHAR(DOB,'DD-MON-
+--------------------
+01-JAN-2004
+01-JAN-2004
+01-JAN-2004
+01-JAN-2004
+01-JAN-2004
+01-JAN-2004
+01-JAN-2004
+01-JAN-2004
+01-JAN-2004
+01-JAN-2004
+01-JAN-2004
+
+TO_CHAR(DOB,'DD-MON-
+--------------------
+01-JAN-2004
+01-JAN-2004
+
+13 rows selected.
+
+SQL> select TO_CHAR(dob,'DD-MON-YY') from student;
+
+TO_CHAR(DOB,'DD-MO
+------------------
+01-JAN-04
+01-JAN-04
+01-JAN-04
+01-JAN-04
+01-JAN-04
+01-JAN-04
+01-JAN-04
+01-JAN-04
+01-JAN-04
+01-JAN-04
+01-JAN-04
+
+TO_CHAR(DOB,'DD-MO
+------------------
+01-JAN-04
+01-JAN-04
+
+13 rows selected.
+
+SQL> select TO_CHAR(dob,'DD-MM-YY') from student;
+
+TO_CHAR(
+--------
+01-01-04
+01-01-04
+01-01-04
+01-01-04
+01-01-04
+01-01-04
+01-01-04
+01-01-04
+01-01-04
+01-01-04
+01-01-04
+
+TO_CHAR(
+--------
+01-01-04
+01-01-04
+
+13 rows selected.
+
+25
+i)
+
+SQL> select name,to_char(DOB,'YEAR') from student;
+
+NAME                 TO_CHAR(DOB,'YEAR')
+-------------------- ------------------------------------------
+Zhang                TWO THOUSAND THREE
+Shankar              TWO THOUSAND THREE
+Brandt               TWO THOUSAND THREE
+
+ii)
+
+SQL> select name,to_char(DOB,'Year') from student;
+
+NAME                 TO_CHAR(DOB,'YEAR')
+-------------------- ------------------------------------------
+Zhang                Two Thousand Three
+Shankar              Two Thousand Three
+Brandt               Two Thousand Three
+
+iii)
+
+SQL> select name,to_char(DOB,'year') from student;
+
+NAME                 TO_CHAR(DOB,'YEAR')
+-------------------- ------------------------------------------
+Zhang                two thousand three
+Shankar              two thousand three
+Brandt               two thousand three
+
+
+26)
+i)
+
+SQL> select name,to_char(DOB,'DAY') from student;
+
+NAME                 TO_CHAR(DOB,'DAY')
+-------------------- ------------------------------------
+Zhang                TUESDAY
+Shankar              TUESDAY
+
+ii)
+
+SQL> select name,to_char(DOB,'Day') from student;
+
+NAME                 TO_CHAR(DOB,'DAY')
+-------------------- ------------------------------------
+Zhang                Tuesday
+Shankar              Tuesday
+Brandt               Tuesday
+
+27)
+i)
+
+SQL> select name,to_char(DOB,'MONTH') from student;
+
+NAME                 TO_CHAR(DOB,'MONTH')
+-------------------- ------------------------------------
+Zhang                DECEMBER
+Shankar              DECEMBER
+Brandt               DECEMBER
+
+ii)
+
+SQL> select name,to_char(DOB,'Month') from student;
+
+NAME                 TO_CHAR(DOB,'MONTH')
+-------------------- ------------------------------------
+Zhang                December
+Shankar              December
+
+28)
+SQL> select LAST_DAY(DOB), to_char(LAST_DAY(DOB),'Day') from student where name='Zhang';
+
+LAST_DAY( TO_CHAR(LAST_DAY(DOB),'DAY')
+--------- ------------------------------------
+31-DEC-03 Wednesday
+
+
+
+29)
+SQL> select name,2023-extract(year from DOB) as age from student;
+
+NAME                        AGE
+-------------------- ----------
+Zhang                        20
+Shankar                      20
+Brandt                       20
+
+
+30)
+SQL> select NEXT_DAY(ADD_MONTHS(DOB,720),'Saturday') from student where name='Brandt';
+
+NEXT_DAY(
+---------
+22-DEC-63
+
+31)
+
+SQL> select name from student where extract(year from DOB)=2003;
+
+NAME
+--------------------
+Zhang
+Shankar
+Brandt
+
+32)
+SQL> select name from student where to_char(DOB,'YYYY')> 2000 and to_char(DOB,'YYYY')<2005;
+
+NAME
+--------------------
+Zhang
+Shankar
+
+33)
+
+SQL> select name from student where to_char(DOB,'YYYY')+60=&X;
+Enter value for x: 2063
+old   1: select name from student where to_char(DOB,'YYYY')+60=&X
+new   1: select name from student where to_char(DOB,'YYYY')+60=2063
+
+NAME
+--------------------
+Zhang
+Shankar
+Brandt
+
+
+
+
+
+

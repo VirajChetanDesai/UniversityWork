@@ -1,0 +1,128 @@
+SQL> declare grade CHAR(1);
+  2  BEGIN grade := '&g';
+  3  IF grade = 'A' THEN
+  4  dbms_output.put_line('Excellent');
+  5  elsif grade = 'B' then
+  6  dbms_output.put_line('Very Good');
+  7  elsif grade = 'C' then
+  8  dbms_output.put_line('Good');
+  9  else
+ 10  dbms_output.put_line('Bad');
+ 11  end if;
+ 12  end
+ 13  ;
+ 14  /
+Enter value for g: A
+old   2: BEGIN grade := '&g';
+new   2: BEGIN grade := 'A';
+Excellent
+
+SQL> declare x NUMBER :=0;
+  2  begin
+  3  loop
+  4  dbms_output.put_line('Inside loop: x = '|| to_char(x));
+  5  x:=x+1;
+  6  if x>3 then exit;
+  7  end if;
+  8  end loop;
+  9  dbms_output.put_line('After loop:x='||to_char(x));
+ 10  end;
+ 11  /
+Inside loop: x = 0
+Inside loop: x = 1
+Inside loop: x = 2
+Inside loop: x = 3
+After loop:x=4
+
+PL/SQL procedure successfully completed.
+
+1)SQL> declare gpax StudentTable.gpa%Type;
+  2  RollNox StudentTable.RollNo%Type;
+  3  begin
+  4  RollNox := '&r';
+  5  select gpa into gpax from StudentTable where RollNo = RollNox;
+  6  dbms_output.put_line(to_char(gpax));
+  7  end;
+  8  /
+Enter value for r: 2
+old   4: RollNox := '&r';
+new   4: RollNox := '2';
+7
+
+2)
+
+declare gpax StudentTable.gpa%Type;
+ rollnox StudentTable.rollno%Type;
+ begin
+ rollnox := '&d';
+ select gpa into gpax from StudentTable where rollno = rollnox;
+ if (gpax > 9 and gpax <=10) then
+ dbms_output.put_line('A');
+ elsif (gpax > 8 and gpax <=9) then
+ dbms_output.put_line('B');
+ elsif (gpax > 7 and gpax <=8) then
+ dbms_output.put_line('C');
+ elsif (gpax > 6 and gpax <=7) then
+ dbms_output.put_line('D');
+ elsif (gpax > 5 and gpax <=6) then
+ dbms_output.put_line('E');
+ elsif (gpax > 4 and gpax <=5) then
+ dbms_output.put_line('F');
+ else
+ dbms_output.put_line('G');
+ end if;
+ end;
+ /
+
+3)
+SQL> declare
+ difference int;
+ days int;
+ price int;
+ begin
+ days := '&d';
+ if days<=7 then
+ dbms_output.put_line('NIL');
+ end if;
+ difference := days - 7;
+ if(difference >= 0 and difference < 7)
+ then
+ price := 1*difference;
+ elsif (difference >=7 and difference <22) then
+ price := 1*7 + (2* (difference-7));
+ elsif (difference >=30) then
+ price:= 1*7 + 2*15 + 5*(difference - 30);
+ end if;
+ dbms_output.put_line(price);
+ end;
+ /
+
+4)
+declare
+rollnox StudentTable.rollno%Type;
+gpax StudentTable.gpa%Type;
+begin
+rollnox:=1;
+LOOP
+select gpa into gpax from StudentTable where rollno = rollnox;
+if (gpax > 9 and gpax <=10) then
+dbms_output.put_line('A+');
+elsif (gpax > 8 and gpax <=9) then
+dbms_output.put_line('A');
+elsif (gpax > 7 and gpax <=8) then
+dbms_output.put_line('B');
+elsif (gpax > 6 and gpax <=7) then
+dbms_output.put_line('C');
+elsif (gpax > 5 and gpax <=6) then
+dbms_output.put_line('D');
+elsif (gpax > 4 and gpax <=5) then
+dbms_output.put_line('E');
+else
+dbms_output.put_line('F');
+end if;
+rollnox := rollnox + 1;
+if rollnox >5 then EXIT;
+end if;
+END LOOP;
+end;
+/
