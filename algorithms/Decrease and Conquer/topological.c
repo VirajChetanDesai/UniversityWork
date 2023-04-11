@@ -1,19 +1,18 @@
-//Topology
 #include<stdio.h>
 #include<stdlib.h>
 
-int isEmpty(int *top){
-    if(*top == -1) return 1;
+int isEmpty(int top){
+    if(top == -1) return 1;
     else return 0;
 }
 
-int isFull(int *top, int size){
-    if(*top == size - 1) return 1;
+int isFull(int top, int size){
+    if(top == size - 1) return 1;
     else return 0;
 }
 
-void push(int*stack, int* top , int size ,int value){
-    if(isFull(top,size)){
+void push(int* stack, int* top , int size ,int value){
+    if(isFull(*top,size)){
         printf("Stack Full\n");
     }else{
         stack[++(*top)] = value;
@@ -21,11 +20,11 @@ void push(int*stack, int* top , int size ,int value){
 }
 
 int pop(int* stack,int* top){
-    if(isEmpty(top)){
+    if(isEmpty(*top)){
         printf("Empty Stack");
         return -1;
     }else{
-        return stack[*top--];
+        return stack[(*top)--];
     }
 }
 
@@ -43,11 +42,12 @@ int* DFS(int index,int* visited,int** adjarray,int n,int* stack,int* top,int siz
     int j;
     printf("%d\n",index);
     push(stack,top,size,index);
-    printf("%d\n",top);
+    printf("%d\n",*top);
     visited[index]=1;
     for(j=0;j<n;j++){
-        if(visited[j]!=1&&adjarray[index][j]==1) DFS(j,visited,adjarray,n,stack,top++,size);
+        if(visited[j]!=1&&adjarray[index][j]==1) DFS(j,visited,adjarray,n,stack,top,size);
     }
+    return stack;
 }
 
 int* SourceRemoval(int startIndex,int* visited,int** adjarray,int n, int* indegree,int* finorder,int* vertices,int count){
@@ -58,34 +58,33 @@ int* SourceRemoval(int startIndex,int* visited,int** adjarray,int n, int* indegr
     for(int j = 0; j < n ; j++){
         if(adjarray[startIndex][j] == 1){
             if(j<min && visited[j]!=-1) min = j;
-            if(indegree[j]>0) indegree[j] = indegree[j]--;
+            if(indegree[j]>0) indegree[j] = --indegree[j];
         }
-        if (count == n-1 && min == n) break;
-        SourceRemoval(min,visited,adjarray,n,indegree,finorder,vertices,count);
     }
-    return finorder;
+    if (count == n-1 || min == n) return finorder;
+    return SourceRemoval(min,visited,adjarray,n,indegree,finorder,vertices,count);
 }
 
-void main(){
-    int* top;
+    int main() {
+    int* top = (int*) malloc(sizeof(int));
     *top = -1;
     int size = 100;
     int n;
-    int* stack = (int*) calloc(size,sizeof(int*));
+    int* stack = (int*) calloc(size,sizeof(int));
     printf("Enter number of nodes : ");
-    scanf("%d",&n);
-    int* visited = (int*) calloc(n,sizeof(int*));
-    int* vertices = (int*) calloc(n,sizeof(int*));
+    scanf("%d", &n);
+    int* visited = (int*) calloc(n,sizeof(int));
+    int* vertices = (int*) calloc(n,sizeof(int));
     int** adjarray = (int**) calloc(n,sizeof(int*));
     for(int i = 0 ; i < n ; i++){
-    printf("Enter value of vertice : ");
-    scanf("%d",&vertices[i]);
+        printf("Enter value of vertice : ");
+        scanf("%d", &vertices[i]);
     }
     for(int i = 0 ; i < n ; i++){
-        int *temparray = (int*) calloc(1,sizeof(int*));
-            for(int j = 0 ; j< n ;j++){
-                temparray[j] = 0;
-            }
+        int *temparray = (int*) calloc(n,sizeof(int));
+        for(int j = 0 ; j < n ; j++){
+            temparray[j] = 0;
+        }
         adjarray[i] = temparray;
     }
     printf("Enter edges :");
@@ -93,11 +92,11 @@ void main(){
     while(check){
         int startvert,endvert;
         printf("Enter edge : ");
-        scanf("%d %d",&startvert,&endvert);
+        scanf("%d %d", &startvert, &endvert);
         int start=-1,end=-1;
         for(int i = 0 ; i < n ; i++){
             if(vertices[i] == startvert){
-            start = i;
+                start = i;
             }
         }
         if(start == -1) {
@@ -106,7 +105,7 @@ void main(){
         }
         for(int i = 0; i<n ; i++){
             if(vertices[i] == endvert){
-            end = i;
+                end = i;
             }
         }
         if(end == -1){
@@ -120,15 +119,14 @@ void main(){
     for(int i = 0 ; i < n ; i++){
         visited[i] = 0 ;
     }
-    top = DFS(0,visited,adjarray,n,stack,top,size);
-    printf("%d",top);
+    DFS(0,visited,adjarray,n,stack,top,size);
     printf("Topological Sort using DFS\n");
-    while(!isEmpty(top)){
-        printf("%d\t",visited[pop(stack,top)]);
+    while(isEmpty(*top)==0){
+        printf("%d\t",vertices[pop(stack,top)]);
     }
 
     //Implementing Source Removal 
-    int* indegree = (int*) calloc(n,sizeof(int*));
+    int* indegree = (int*) calloc(n,sizeof(int));
     for(int i = 0 ; i < n ; i++){
         int indeg = 0;
         for(int j = 0 ; j < n ; j++){
@@ -143,10 +141,11 @@ void main(){
         }
         visited[i] = 0;
     }
-    printf("Topological Sort Using Source Removal Method : \n");
-    int* finorder = (int*) calloc(n,sizeof(int*));
+    printf("\nTopological Sort Using Source Removal Method : \n");
+    int* finorder = (int*) calloc(n,sizeof(int));
     finorder = SourceRemoval(min_indegree,visited,adjarray,n,indegree,finorder,vertices,0);
-    for(int i = 0 ; i<n ; i++){
-        printf("%d\t",finorder[i]);
+    for(int i = 0 ; i < n ; i++){
+        printf("%d\t",vertices[finorder[i]]);
     }
+    return 0;
 }
