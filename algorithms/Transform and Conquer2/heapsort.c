@@ -55,9 +55,25 @@ int main(){
         heap[size-k] = 0;
         heapify(heap,size);
     }
-    printf("Final Array :");
+    printf("\nFinal Array :");
     for(int i = 0 ; i <size ; i++){
         printf("%d\t",finarray[i]);
     }
     return 0;
 }
+/*
+OUTPUT
+Enter the number of elements: 10
+Enter element: 10
+Enter element: 9
+Enter element: 8
+Enter element: 7
+Enter element: 1
+Enter element: 2
+Enter element: 3
+Enter element: 4
+Enter element: 5
+Enter element: 6
+Heap:
+10      9       8       7       6       2       3       4       5       1
+Final Array :10 9       8       7       6       5       4       3       2       1*/
