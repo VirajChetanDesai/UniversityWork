@@ -1,0 +1,60 @@
+/*create table Part(
+    PartNo int PRIMARY KEY,
+    PartName varchar(30) NOT NULL,
+    VehicleType varchar(30) NOT NULL check (VehicleType in ('V1','V2','V3','V4','V5')),
+    UnitPrice int NOT NULL check (UnitPrice > 0),
+    SalesPrice int NOT NULL check (SalesPrice > 0)
+);
+
+create table Service(
+    ServiceNo int PRIMARY KEY,
+    PartNo int,
+    ServiceDate date NOT NULL,
+    CustomerNo varchar(30) NOT NULL,
+    Qty int NOT NULL,
+    constraint fk foreign key(PartNo) references Part(PartNo)
+);*/
+/*
+insert into Part values(1,'P1','V1',10,12);
+insert into Part values(2,'P2','V2',100,110);
+insert into Part values(3,'P3','V1',150,175);
+insert into Part values(4,'P4','V3',200,250);
+insert into Part values(5,'P5','V2',75,90);
+*/
+/*
+insert into Service values(1,1,'01-Jan-17','C1',5);
+insert into Service values(2,3,'01-Jan-17','C1',4);
+insert into Service values(3,3,'05-Feb-18','C2',10);
+insert into Service values(4,1,'15-May-18','C3',9);
+insert into Service values(5,1,'03-Jun-19','C1',5);
+*/
+/*
+select PartName from Part where PartName not in (select p.PartName from Service s,Part p where p.PartNo = s.PartNo);
+select CustomerNo from Service group by CustomerNo having Count(CustomerNo) >= all(select Count(CustomerNo) from Service group by CustomerNo);
+*/
+select CustomerNo from Service group by CustomerNo having PartNo = all(select PartNo from Part where VehicleType = 'V1');
+select CustomerNo,PartNo from Service group by CustomerNo;
+
+declare
+INTERRUPT1 Exception;
+partsearch Part.PartNo%Type;
+profit Part.SalesPrice%Type;
+netprofit Part.SalesPrice%Type := 0;
+Cursor C1 (part Part.PartNo%Type) is select unique serviceno,SalesPrice,UnitPrice,Qty from Part p, Service S where p.PartNo = s.PartNo and s.PartNo = part;
+begin
+partsearch := &d;
+select PartNo into partsearch from Part where PartNo = partsearch;
+if SQL%FOUND THEN
+	for tmp in C1(partsearch)
+	LOOP
+		profit := (tmp.SalesPrice - tmp.UnitPrice)*tmp.Qty;
+		netprofit := netprofit + profit;
+		dbms_output.put_line('Service No: ' || tmp.serviceno || ', Sales Price: ' || tmp.SalesPrice || ', Unit Price: ' || tmp.UnitPrice || ', Qty: ' || tmp.Qty);
+	END LOOP;
+	dbms_output.put_line('Net profit : '||netprofit);
+ELSE
+	RAISE INTERRUPT1;
+END IF;
+EXCEPTION WHEN INTERRUPT1 THEN
+	dbms_output.put_line('Invalid input');
+END;
