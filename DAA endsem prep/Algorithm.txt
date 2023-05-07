@@ -1,7 +1,7 @@
 Prims Algorithm - done
-Kruskals Algorithm
-Dijktras Algorithm
-Huffman Tree
+or Kruskals Algorithm
+Dijktras Algorithm - done
+Huffman Tree 
 Find Maximum Spanning Tree - done
 Change Making Problem
 Warshalls Algorithm
