@@ -31,6 +31,7 @@ void prim(int n, int** cost) {
                 }
             }
         }
+        
         visited[v] = 1; //now set final node to confirm as visited
         parent[v] = u; //note down parent of current node
         mincost += min; // minimum cost is updated

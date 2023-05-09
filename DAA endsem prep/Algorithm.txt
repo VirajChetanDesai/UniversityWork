@@ -4,10 +4,11 @@ Dijktras Algorithm - done
 Huffman Tree 
 Find Maximum Spanning Tree - done
 Change Making Problem
-Warshalls Algorithm
-Floyds Algorithm
-0/1 Knapsack bottom up / memory function (find optimal subset/partition problem etc.)
+Warshalls Algorithm - done
+Floyds Algorithm - done
+0/1 Knapsack bottom up / memory function (find optimal subset/partition problem etc.) - done
 Binomial Coefficient of any number
 Horspools Algorithm
 Open / Closed Hashing
 Max Heap, Min Heap
+DFS/BFS - done
