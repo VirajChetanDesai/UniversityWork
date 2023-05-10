@@ -3,12 +3,14 @@ or Kruskals Algorithm
 Dijktras Algorithm - done
 Huffman Tree 
 Find Maximum Spanning Tree - done
-Change Making Problem
 Warshalls Algorithm - done
 Floyds Algorithm - done
-0/1 Knapsack bottom up / memory function (find optimal subset/partition problem etc.) - done
+Closed Hashing - done -> endsem q2
+DFS/BFS - done
+0/1 Knapsack bottom up / memory function (find optimal subset/partition problem etc.) - done -> endsem q1
 Binomial Coefficient of any number
 Horspools Algorithm
-Open / Closed Hashing
+Open Hashing
+Change Making Problem
 Max Heap, Min Heap
-DFS/BFS - done
+AVL trees
