@@ -12,5 +12,5 @@ Binomial Coefficient of any number
 Horspools Algorithm
 Open Hashing
 Change Making Problem
-Max Heap, Min Heap
+Max Heap, Min Heap - done
 AVL trees
