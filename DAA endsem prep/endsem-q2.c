@@ -22,7 +22,7 @@ int main(){
         hash[i] = "NULL";
     }
     int i = 0;
-    while(i<=9){
+    while(i<=n-1){
         char *string = (char*)calloc(30,sizeof(char));
         printf("\nEnter String to save (enter 1 to break): ");
         scanf("%s",string);

@@ -65,7 +65,7 @@ node* insert(node* node,int key){
     node->height = 1 + max(getHeight(node->left),getHeight(node->right));
     int bf = getBalanaceFactor(node);
     //ll
-    if(bf>1 && key < node->left->key){
+    if(bf>1 && key  < node->left->key){
         rightRotate(node);
     }
     //rr

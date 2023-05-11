@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
-
+// Prims alogrithm - minimum spanning tree
+// Shortest path taken without cycles
 void prim(int n, int** cost) {
     int i, j, u, v, min, mincost = 0;
     int* visited= (int*)calloc(n,sizeof(int));

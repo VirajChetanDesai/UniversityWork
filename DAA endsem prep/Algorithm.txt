@@ -1,16 +1,20 @@
 Prims Algorithm - done
-or Kruskals Algorithm
+or Kruskals Algorithm - skipped
 Dijktras Algorithm - done
-Huffman Tree 
+Huffman Tree - skipped
+implementation shortcut - emergency
+[a,b]
+[2,3]
+["0","1","01","10","11","110"...]
 Find Maximum Spanning Tree - done
 Warshalls Algorithm - done
 Floyds Algorithm - done
 Closed Hashing - done -> endsem q2
-DFS/BFS - done
-0/1 Knapsack bottom up / memory function (find optimal subset/partition problem etc.) - done -> endsem q1
+DFS/BFS - done -> endsem q1
+0/1 Knapsack bottom up / memory function (find optimal subset/partition problem etc.) - done
 Binomial Coefficient of any number
 Horspools Algorithm
 Open Hashing
 Change Making Problem
 Max Heap, Min Heap - done
-AVL trees
+AVL trees - done

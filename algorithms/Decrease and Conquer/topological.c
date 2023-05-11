@@ -35,10 +35,10 @@ void addEdge(int start,int end,int** array){
     }
 }
 
-static int maxtop = -1;
+//static int maxtop = -1;
 int* DFS(int index,int* visited,int** adjarray,int n,int* stack,int* top,int size){
-    if(*top >= maxtop) maxtop = *top;
-    *top = maxtop;
+    //if(*top >= maxtop) maxtop = *top;
+    //*top = maxtop;
     int j;
     printf("%d\n",index);
     push(stack,top,size,index);

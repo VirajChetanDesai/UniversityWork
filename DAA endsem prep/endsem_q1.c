@@ -27,6 +27,21 @@ int dequeue(struct queue *q){
     return -1;
 }
 
+void BFS(struct queue *q,int** graph,int* visited,int n){
+    int element = dequeue(q);
+    printf("%d\t",element);
+    visited[element] = 1;
+    for(int i = 0 ; i < n ; i++){
+        if(graph[element][i] == 1 && visited[i] == 0){
+            visited[i] = 1;
+            enqueue(q,i);
+        }
+    }
+    if(q->start == q->end) return;
+    BFS(q,graph,visited,n);
+}
+
+
 static int cycles = 0;
 static int direction = 0;
 void DFS(int** graph , int* visited , int n , int index){
@@ -43,6 +58,7 @@ void DFS(int** graph , int* visited , int n , int index){
             else if(direction == 2){
                 printf("Mixed cycle\n");
             }
+            direction = 0;
     }
     if(graph[index][i] == 1 && visited[i]==0){
         if(i<index)direction = 1;
@@ -51,20 +67,6 @@ void DFS(int** graph , int* visited , int n , int index){
       DFS(graph,visited,n,i);
     }
   }
-}
-
-void BFS(struct queue *q,int** graph,int* visited,int n){
-    int element = dequeue(q);
-    printf("%d\t",element);
-    visited[element] = 1;
-    for(int i = 0 ; i < n ; i++){
-        if(graph[element][i] == 1 && visited[i] == 0){
-            visited[i];
-            enqueue(q,i);
-        }
-    }
-    if(q->start == q->end) return;
-    BFS(q,graph,visited,n);
 }
 
 int main(){
