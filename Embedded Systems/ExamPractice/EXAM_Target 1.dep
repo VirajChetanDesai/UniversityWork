@@ -1,2 +1,2 @@
 Dependencies for Project 'EXAM', Target 'Target 1': (DO NOT MODIFY !)
-F (.\exam.s)(0x645D0AEF)(--cpu Cortex-M3 --pd "__EVAL SETA 1" -g --apcs=interwork -I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\NXP\LPC17xx--list .\exam.lst --xref -o .\exam.o --depend .\exam.d)
+F (.\practice3.s)(0x645E018A)(--cpu Cortex-M3 --pd "__EVAL SETA 1" -g --apcs=interwork -I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\NXP\LPC17xx--list .\practice3.lst --xref -o .\practice3.o --depend .\practice3.d)

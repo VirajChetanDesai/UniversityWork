@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "*.ejs": "html",
-        "DFS.C": "cpp"
+        "DFS.C": "cpp",
+        "ES.C": "cpp"
     }
 }
