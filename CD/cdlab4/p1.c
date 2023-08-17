@@ -20,7 +20,7 @@ enum TokenType {
 typedef struct HashEntry {
     char* name;
     int index;
-    enum TokenType type;
+    char* type;
     char* scope;
     char* arguments;
     char* numberOfArguments;
@@ -52,7 +52,7 @@ HashTable* createHashTable() {
     return ht;
 }
 
-void insert(HashTable* ht, const char* key, int index, enum TokenType type,
+void insert(HashTable* ht, const char* key, int index, const char* type,
             const char* scope, const char* arguments, const char* numberOfArguments,
             const char* returnType) {
     unsigned int hash = hashFunction(key);
@@ -61,7 +61,7 @@ void insert(HashTable* ht, const char* key, int index, enum TokenType type,
     if (entry) {
         entry->name = strdup(key);
         entry->index = index;
-        entry->type = type;
+        entry->type = strdup(type);
         entry->scope = strdup(scope);
         entry->arguments = strdup(arguments);
         entry->numberOfArguments = strdup(numberOfArguments);
@@ -142,7 +142,7 @@ void processToken(const char* tokenName, enum TokenType tokenType, unsigned int 
 
     if (typeString != NULL) {
         printToken(typeString, tokenName, 0, row, col);
-        insert(Hashtable, tokenName, Hashtable->index++, tokenType, "", "", "", "");
+        insert(Hashtable, tokenName, Hashtable->index++, typeString, "", "", "", "");
     }
 }
 
