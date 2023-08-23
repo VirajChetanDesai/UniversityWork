@@ -4,6 +4,8 @@
 #include <ctype.h>
 #include <stdbool.h>
 
+#define TABLE_SIZE 1000
+
 enum TokenType {
     STRING_LITERAL,
     RELATIONAL_OPERATOR,
@@ -15,19 +17,101 @@ enum TokenType {
     IDENTIFIER
 };
 
-struct Token {
-    char token_name[100];
+typedef struct HashEntry {
+    char* name;
     int index;
-    unsigned int row, col;
-    enum TokenType type;
-};
+    char* type;
+    char* scope;
+    char* arguments;
+    char* numberOfArguments;
+    char* returnType;
+    struct HashEntry* next;
+} HashEntry;
 
-void printToken(const char* tokenType, const char* tokenName, int index, unsigned int row, unsigned int col) {
-    printf("<%s,%d,%u,%u>%s\n", tokenType, 0, row, col, tokenName);
+typedef struct {
+    HashEntry* table[TABLE_SIZE];
+    int index ;
+} HashTable;
+
+unsigned int hashFunction(const char* key) {
+    unsigned int hash = 0;
+    while (*key) {
+        hash = (hash << 5) + *key++;
+    }
+    return hash % TABLE_SIZE;
 }
 
-void processToken(const char* tokenName, enum TokenType tokenType, unsigned int row, unsigned int col) {
+HashTable* createHashTable() {
+    HashTable* ht = (HashTable*)malloc(sizeof(HashTable));
+    ht->index = 0;
+    if (ht) {
+        for (int i = 0; i < TABLE_SIZE; ++i) {
+            ht->table[i] = NULL;
+        }
+    }
+    return ht;
+}
+
+void insert(HashTable* ht, const char* key, int index, const char* type,
+            const char* scope, const char* arguments, const char* numberOfArguments,
+            const char* returnType) {
+    unsigned int hash = hashFunction(key);
+
+    HashEntry* entry = (HashEntry*)malloc(sizeof(HashEntry));
+    if (entry) {
+        entry->name = strdup(key);
+        entry->index = index;
+        entry->type = strdup(type);
+        entry->scope = strdup(scope);
+        entry->arguments = strdup(arguments);
+        entry->numberOfArguments = strdup(numberOfArguments);
+        entry->returnType = strdup(returnType);
+        entry->next = ht->table[hash];
+        ht->table[hash] = entry;
+    }
+}
+
+HashEntry* lookup(const HashTable* ht, const char* key) {
+    unsigned int hash = hashFunction(key);
+    HashEntry* entry = ht->table[hash];
+    while (entry != NULL) {
+        if (strcmp(entry->name, key) == 0) {
+            return entry;
+        }
+        entry = entry->next;
+    }
+
+    return NULL;
+}
+
+void cleanupHashTable(HashTable* ht) {
+    for (int i = 0; i < TABLE_SIZE; ++i) {
+        HashEntry* entry = ht->table[i];
+        while (entry != NULL) {
+            HashEntry* next = entry->next;
+            free(entry->name);
+            free(entry->scope);
+            free(entry->arguments);
+            free(entry->numberOfArguments);
+            free(entry->returnType);
+            free(entry);
+            entry = next;
+        }
+    }
+    free(ht);
+}
+
+void printToken(const char* tokenType, const char* tokenName, int index, unsigned int row, unsigned int col) {
+    printf("<%s,%d,%u,%u>%s\n", tokenType, index, row, col, tokenName);
+}
+
+void processToken(const char* tokenName, enum TokenType tokenType, unsigned int row, unsigned int col, HashTable* Hashtable) {
     const char* typeString = NULL;
+    HashEntry* entry = lookup(Hashtable, tokenName);
+    if (entry != NULL) {
+        printToken(entry->type, entry->name, entry->index, row, col);
+        return;
+    }
 
     switch (tokenType) {
         case STRING_LITERAL:
@@ -58,6 +142,7 @@ void processToken(const char* tokenName, enum TokenType tokenType, unsigned int 
 
     if (typeString != NULL) {
         printToken(typeString, tokenName, 0, row, col);
+        insert(Hashtable, tokenName, Hashtable->index++, typeString, "", "", "", "");
     }
 }
 
@@ -99,6 +184,7 @@ bool checkKeyword(char *input_word) {
         return false;
     }
 }
+
 void removeCommentsAndDirectives(const char* inputFileName, const char* outputFileName) {
     FILE *srcFile, *tgtFile;
     srcFile = fopen(inputFileName, "r");
@@ -113,11 +199,11 @@ void removeCommentsAndDirectives(const char* inputFileName, const char* outputFi
         exit(1);
     }
     char c, prev = '\0', prevPrev = '\0';
-    int insideString = 0; 
-    int insideCharLiteral = 0; 
-    int insideCommentSingle = 0; 
+    int insideString = 0;
+    int insideCharLiteral = 0;
+    int insideCommentSingle = 0;
     int insideCommentMulti = 0;
-    int insideDirective = 0; 
+    int insideDirective = 0;
     while ((c = fgetc(srcFile)) != EOF) {
         if (!insideCharLiteral && !insideCommentSingle && !insideCommentMulti && !insideDirective) {
             if (c == '"' && prev != '\\' && !insideCommentMulti) {
@@ -125,19 +211,20 @@ void removeCommentsAndDirectives(const char* inputFileName, const char* outputFi
             } else if (c == '\'' && prev != '\\') {
                 insideCharLiteral = !insideCharLiteral;
             } else if (c == '/' && prev == '/') {
-                insideCommentSingle = 1; 
+                insideCommentSingle = 1;
             } else if (c == '*' && prev == '/') {
-                insideCommentMulti = 1; 
+                insideCommentMulti = 1;
             } else if (c == '#') {
                 insideDirective = 1;
-            } else if (!insideString) {
+            }
+            if (!insideString && !insideCharLiteral && !insideDirective) {
                 fputc(c, tgtFile);
             }
         } else if (insideCommentSingle && c == '\n') {
             insideCommentSingle = 0;
         } else if (insideCommentMulti && c == '/' && prev == '*') {
             insideCommentMulti = 0;
-            continue; // Do not print the ending '/' of the comment.
+            continue;
         } else if (insideDirective && c == '\n') {
             insideDirective = 0;
         }
@@ -149,58 +236,80 @@ void removeCommentsAndDirectives(const char* inputFileName, const char* outputFi
         prevPrev = prev;
         prev = c;
     }
-
     fclose(srcFile);
     fclose(tgtFile);
 }
 
-void lexicalAnalyser(const char* outputFileName) {
+void lexicalAnalyser(const char* outputFileName, HashTable* Hashtable) {
     char c;
-    char buf[50000];
+    char buf[5000];
     int row = 1, col = 1;
-
     FILE* fp = fopen(outputFileName, "r");
+    
     if (fp == NULL) {
         printf("Cannot open file\n");
         exit(1);
     }
+    
     while ((c = fgetc(fp)) != EOF) {
         int i = 0;
         buf[0] = '\0';
+        
         if (c == '\n') {
-	        row++;
-	        col = 1;
-	    } else {
-	        col++;
-	    }
+            row++;
+            col = 1;
+        } else {
+            col++;
+        }
+        
         if (c == '"' || c == '\'') { // Strings or character literals
             char opening_quote = c;
             buf[i++] = c;
+            
             while ((c = fgetc(fp)) != EOF) {
-                if (c == '\\') {  // Escape sequence
+                if (c == '\\') { // Escape sequence
                     buf[i++] = c;
                     c = fgetc(fp);
-                    if (c == EOF) break;  // Handle the case where file ends with a backslash
                     buf[i++] = c;
                 } else if (c == opening_quote) {
                     buf[i++] = c;
                     buf[i] = '\0';
-                    processToken(buf, STRING_LITERAL, row , col);
+                    HashEntry* entry = lookup(Hashtable, buf);
+                    if (entry != NULL) {
+                        printToken(entry->type, entry->name, entry->index, row, col);
+                    } else {
+                        processToken(buf, STRING_LITERAL, row, col, Hashtable);
+                    }
                     break;
                 } else {
                     buf[i++] = c;
                 }
             }
-        }else if (c == '=') {
+            
+            if (c == EOF) {
+                printf("Unclosed string or character literal at row %d, column %d\n", row, col);
+                // Handle unclosed string or character literal
+            }
+        }  else if (c == '=') {
             buf[i++] = c;
             c = fgetc(fp);
             if (c == '=') {
                 buf[i++] = c;
                 buf[i] = '\0';
-                processToken(buf, RELATIONAL_OPERATOR, row , col);
+                HashEntry* entry = lookup(Hashtable, buf);
+                if (entry != NULL) {
+                    printToken(entry->type, entry->name, entry->index, row, col);
+                } else {
+                    processToken(buf, RELATIONAL_OPERATOR, row, col, Hashtable);
+                }
             } else {
                 buf[i] = '\0';
-                processToken(buf, ASSIGNMENT_OPERATOR, row , col);
+                HashEntry* entry = lookup(Hashtable, buf);
+                if (entry != NULL) {
+                    printToken(entry->type, entry->name, entry->index, row, col);
+                } else {
+                    processToken(buf, ASSIGNMENT_OPERATOR, row, col, Hashtable);
+                }
                 fseek(fp, -1, SEEK_CUR);
             } 
         } else if (c == '<' || c == '>' || c == '!') {
@@ -209,26 +318,51 @@ void lexicalAnalyser(const char* outputFileName) {
             if (c == '=') {
                 buf[i++] = c;
                 buf[i] = '\0';
-                processToken(buf, RELATIONAL_OPERATOR, row , col);
+                HashEntry* entry = lookup(Hashtable, buf);
+                if (entry != NULL) {
+                    printToken(entry->type, entry->name, entry->index, row, col);
+                } else {
+                    processToken(buf, RELATIONAL_OPERATOR, row, col, Hashtable);
+                }
             } else {
                 buf[i] = '\0';
-                processToken(buf, RELATIONAL_OPERATOR , row , col);
+                HashEntry* entry = lookup(Hashtable, buf);
+                if (entry != NULL) {
+                    printToken(entry->type, entry->name, entry->index, row, col);
+                } else {
+                    processToken(buf, RELATIONAL_OPERATOR, row, col, Hashtable);
+                }
                 fseek(fp, -1, SEEK_CUR);
             }
         } else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '%') {
             buf[i++] = c;
             buf[i] = '\0';
-            processToken(buf, ARITHMETIC_OPERATOR, row , col);
+            HashEntry* entry = lookup(Hashtable, buf);
+            if (entry != NULL) {
+                printToken(entry->type, entry->name, entry->index, row, col);
+            } else {
+                processToken(buf, ARITHMETIC_OPERATOR, row, col, Hashtable);
+            }
         } else if (c == '&' || c == '|') {
             buf[i++] = c;
             c = fgetc(fp);
             if (c == buf[0]) {
                 buf[i++] = c;
                 buf[i] = '\0';
-                processToken(buf, LOGICAL_OPERATOR , row , col);
+                HashEntry* entry = lookup(Hashtable, buf);
+                if (entry != NULL) {
+                    printToken(entry->type, entry->name, entry->index, row, col);
+                } else {
+                    processToken(buf, LOGICAL_OPERATOR, row, col, Hashtable);
+                }
             } else {
                 buf[i] = '\0';
-                processToken(buf, INVALID_OPERATOR, row , col);
+                HashEntry* entry = lookup(Hashtable, buf);
+                if (entry != NULL) {
+                    printToken(entry->type, entry->name, entry->index, row, col);
+                } else {
+                    processToken(buf, INVALID_OPERATOR, row, col, Hashtable);
+                }
                 fseek(fp, -1, SEEK_CUR);
             }
         } else if (isalpha(c) || c == '_') {
@@ -239,16 +373,25 @@ void lexicalAnalyser(const char* outputFileName) {
             buf[i] = '\0';
 
             if (checkKeyword(buf)) {
-                processToken(buf, KEYWORD, row , col);
+                HashEntry* entry = lookup(Hashtable, buf);
+                if (entry != NULL) {
+                    printToken(entry->type, entry->name, entry->index, row, col);
+                } else {
+                    processToken(buf, KEYWORD, row, col, Hashtable);
+                }
             } else {
-                processToken(buf, IDENTIFIER, row , col);
+                HashEntry* entry = lookup(Hashtable, buf);
+                if (entry != NULL) {
+                    printToken(entry->type, entry->name, entry->index, row, col);
+                } else {
+                    processToken(buf, IDENTIFIER, row, col, Hashtable);
+                }
             }
             fseek(fp, -1, SEEK_CUR);
         }
     }
     fclose(fp);
 }
-
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
@@ -267,8 +410,10 @@ int main(int argc, char* argv[]) {
         *extension = '\0';
     }
     strcat(outputFileName, ".out");
+    HashTable *Hashtable = createHashTable(); 
     removeCommentsAndDirectives(inputFileName, outputFileName);
-    lexicalAnalyser(outputFileName);
+    lexicalAnalyser(outputFileName, Hashtable); 
+    cleanupHashTable(Hashtable);
     free(outputFileName);
     return 0;
 }

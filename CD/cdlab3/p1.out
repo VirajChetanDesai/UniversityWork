@@ -1,8 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <stdbool.h>
 
 enum TokenType {
     STRING_LITERAL,
@@ -23,7 +18,7 @@ struct Token {
 };
 
 void printToken(const char* tokenType, const char* tokenName, int index, unsigned int row, unsigned int col) {
-    printf("<%s,%d,%u,%u>%s\n", tokenType, 0, row, col, tokenName);
+    printf("<%s,%d,%u,%u>%s\n, tokenType, 0, row, col, tokenName);
 }
 
 void processToken(const char* tokenName, enum TokenType tokenType, unsigned int row, unsigned int col) {
@@ -31,28 +26,28 @@ void processToken(const char* tokenName, enum TokenType tokenType, unsigned int 
 
     switch (tokenType) {
         case STRING_LITERAL:
-            typeString = "string";
+            typeString = "string;
             break;
         case RELATIONAL_OPERATOR:
-            typeString = "relational";
+            typeString = "relational;
             break;
         case ASSIGNMENT_OPERATOR:
-            typeString = "assignment";
+            typeString = "assignment;
             break;
         case ARITHMETIC_OPERATOR:
-            typeString = "arithmetic";
+            typeString = "arithmetic;
             break;
         case LOGICAL_OPERATOR:
-            typeString = "logical";
+            typeString = "logical;
             break;
         case INVALID_OPERATOR:
-            typeString = "invalid";
+            typeString = "invalid;
             break;
         case KEYWORD:
-            typeString = "keyword";
+            typeString = "keyword;
             break;
         case IDENTIFIER:
-            typeString = "id";
+            typeString = "id;
             break;
     }
 
@@ -62,38 +57,38 @@ void processToken(const char* tokenName, enum TokenType tokenType, unsigned int 
 }
 
 bool checkKeyword(char *input_word) {
-    if (strcmp(input_word, "auto") == 0 ||
-        strcmp(input_word, "break") == 0 ||
-        strcmp(input_word, "case") == 0 ||
-        strcmp(input_word, "char") == 0 ||
-        strcmp(input_word, "const") == 0 ||
-        strcmp(input_word, "continue") == 0 ||
-        strcmp(input_word, "default") == 0 ||
-        strcmp(input_word, "do") == 0 ||
-        strcmp(input_word, "double") == 0 ||
-        strcmp(input_word, "else") == 0 ||
-        strcmp(input_word, "enum") == 0 ||
-        strcmp(input_word, "extern") == 0 ||
-        strcmp(input_word, "float") == 0 ||
-        strcmp(input_word, "for") == 0 ||
-        strcmp(input_word, "goto") == 0 ||
-        strcmp(input_word, "if") == 0 ||
-        strcmp(input_word, "int") == 0 ||
-        strcmp(input_word, "long") == 0 ||
-        strcmp(input_word, "register") == 0 ||
-        strcmp(input_word, "return") == 0 ||
-        strcmp(input_word, "short") == 0 ||
-        strcmp(input_word, "signed") == 0 ||
-        strcmp(input_word, "sizeof") == 0 ||
-        strcmp(input_word, "static") == 0 ||
-        strcmp(input_word, "struct") == 0 ||
-        strcmp(input_word, "switch") == 0 ||
-        strcmp(input_word, "typedef") == 0 ||
-        strcmp(input_word, "union") == 0 ||
-        strcmp(input_word, "unsigned") == 0 ||
-        strcmp(input_word, "void") == 0 ||
-        strcmp(input_word, "volatile") == 0 ||
-        strcmp(input_word, "while") == 0) {
+    if (strcmp(input_word, "auto) == 0 ||
+        strcmp(input_word, "break) == 0 ||
+        strcmp(input_word, "case) == 0 ||
+        strcmp(input_word, "char) == 0 ||
+        strcmp(input_word, "const) == 0 ||
+        strcmp(input_word, "continue) == 0 ||
+        strcmp(input_word, "default) == 0 ||
+        strcmp(input_word, "do) == 0 ||
+        strcmp(input_word, "double) == 0 ||
+        strcmp(input_word, "else) == 0 ||
+        strcmp(input_word, "enum) == 0 ||
+        strcmp(input_word, "extern) == 0 ||
+        strcmp(input_word, "float) == 0 ||
+        strcmp(input_word, "for) == 0 ||
+        strcmp(input_word, "goto) == 0 ||
+        strcmp(input_word, "if) == 0 ||
+        strcmp(input_word, "int) == 0 ||
+        strcmp(input_word, "long) == 0 ||
+        strcmp(input_word, "register) == 0 ||
+        strcmp(input_word, "return) == 0 ||
+        strcmp(input_word, "short) == 0 ||
+        strcmp(input_word, "signed) == 0 ||
+        strcmp(input_word, "sizeof) == 0 ||
+        strcmp(input_word, "static) == 0 ||
+        strcmp(input_word, "struct) == 0 ||
+        strcmp(input_word, "switch) == 0 ||
+        strcmp(input_word, "typedef) == 0 ||
+        strcmp(input_word, "union) == 0 ||
+        strcmp(input_word, "unsigned) == 0 ||
+        strcmp(input_word, "void) == 0 ||
+        strcmp(input_word, "volatile) == 0 ||
+        strcmp(input_word, "while) == 0) {
         return true;
     } else {
         return false;
@@ -101,14 +96,14 @@ bool checkKeyword(char *input_word) {
 }
 void removeCommentsAndDirectives(const char* inputFileName, const char* outputFileName) {
     FILE *srcFile, *tgtFile;
-    srcFile = fopen(inputFileName, "r");
+    srcFile = fopen(inputFileName, "r);
     if (srcFile == NULL) {
-        printf("Input file cannot be opened\n");
+        printf("Input file cannot be opened\n);
         exit(1);
     }
-    tgtFile = fopen(outputFileName, "w+");
+    tgtFile = fopen(outputFileName, "w+);
     if (tgtFile == NULL) {
-        printf("Output file cannot be opened\n");
+        printf("Output file cannot be opened\n);
         fclose(srcFile);
         exit(1);
     }
