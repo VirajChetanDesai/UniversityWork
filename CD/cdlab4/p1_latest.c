@@ -14,6 +14,7 @@ enum TokenType {
     LOGICAL_OPERATOR,
     INVALID_OPERATOR,
     KEYWORD,
+    FUNCTION,
     IDENTIFIER
 };
 
@@ -23,10 +24,11 @@ typedef struct HashEntry {
     char* type;
     char* scope;
     char* arguments;
-    char* numberOfArguments;
     char* returnType;
     struct HashEntry* next;
+    int numArguments; 
 } HashEntry;
+
 
 typedef struct {
     HashEntry* table[TABLE_SIZE];
@@ -53,8 +55,8 @@ HashTable* createHashTable() {
 }
 
 void insert(HashTable* ht, const char* key, int index, const char* type,
-            const char* scope, const char* arguments, const char* numberOfArguments,
-            const char* returnType) {
+            const char* scope, const char* arguments,
+            const char* returnType, int numArgs) { // Add numArgs parameter
     unsigned int hash = hashFunction(key);
 
     HashEntry* entry = (HashEntry*)malloc(sizeof(HashEntry));
@@ -64,8 +66,8 @@ void insert(HashTable* ht, const char* key, int index, const char* type,
         entry->type = strdup(type);
         entry->scope = strdup(scope);
         entry->arguments = strdup(arguments);
-        entry->numberOfArguments = strdup(numberOfArguments);
         entry->returnType = strdup(returnType);
+        entry->numArguments = numArgs; // Store the number of arguments
         entry->next = ht->table[hash];
         ht->table[hash] = entry;
     }
@@ -92,7 +94,6 @@ void cleanupHashTable(HashTable* ht) {
             free(entry->name);
             free(entry->scope);
             free(entry->arguments);
-            free(entry->numberOfArguments);
             free(entry->returnType);
             free(entry);
             entry = next;
@@ -100,6 +101,7 @@ void cleanupHashTable(HashTable* ht) {
     }
     free(ht);
 }
+
 
 void printToken(const char* tokenType, const char* tokenName, int index, unsigned int row, unsigned int col) {
     printf("<%s,%d,%u,%u>%s\n", tokenType, index, row, col, tokenName);
@@ -112,7 +114,36 @@ void processToken(const char* tokenName, enum TokenType tokenType, unsigned int 
         printToken(entry->type, entry->name, entry->index, row, col);
         return;
     }
-
+    if (tokenType == IDENTIFIER && isalpha(tokenName[0]) && strchr(tokenName, '(') != NULL) {
+            const char* openingBracket = strchr(tokenName, '(');
+            const char* closingBracket = strrchr(tokenName, ')');
+            const char* returnType = tokenName; 
+            if (openingBracket != NULL) {
+                returnType = tokenName;
+                while (returnType < openingBracket) {
+                    if (*returnType == ' ') {
+                        returnType++; 
+                    } else {
+                        break;
+                    }
+                }
+            }
+            if (openingBracket != NULL && closingBracket != NULL && strchr(openingBracket, '"') == NULL) {
+                int numArgs = 0;
+                const char* comma = openingBracket;
+                while (comma < closingBracket) {
+                    comma = strchr(comma, ',');
+                    if (comma != NULL) {
+                    numArgs++;
+                    comma++;
+                }
+            }
+            insert(Hashtable, tokenName, Hashtable->index++, "function", "", "", returnType, numArgs);
+            printToken("function", tokenName, 0, row, col);
+            return;
+        }
+    }
+        
     switch (tokenType) {
         case STRING_LITERAL:
             typeString = "string";
@@ -142,7 +173,7 @@ void processToken(const char* tokenName, enum TokenType tokenType, unsigned int 
 
     if (typeString != NULL) {
         printToken(typeString, tokenName, 0, row, col);
-        insert(Hashtable, tokenName, Hashtable->index++, typeString, "", "", "", "");
+        insert(Hashtable, tokenName, Hashtable->index++, typeString, "", "", "", "", 0);
     }
 }
 
@@ -365,32 +396,37 @@ void lexicalAnalyser(const char* outputFileName, HashTable* Hashtable) {
                 }
                 fseek(fp, -1, SEEK_CUR);
             }
-        } else if (isalpha(c) || c == '_') {
-            while (isalnum(c) || c == '_') {
-                buf[i++] = c;
-                c = fgetc(fp);
-            }
-            buf[i] = '\0';
+        }else if (isalpha(c) || c == '_') {
+    while (isalnum(c) || c == '_') {
+        buf[i++] = c;
+        c = fgetc(fp);
+    }
+    buf[i] = '\0';
 
-            if (checkKeyword(buf)) {
-                HashEntry* entry = lookup(Hashtable, buf);
-                if (entry != NULL) {
-                    printToken(entry->type, entry->name, entry->index, row, col);
-                } else {
-                    processToken(buf, KEYWORD, row, col, Hashtable);
-                }
-            } else {
-                HashEntry* entry = lookup(Hashtable, buf);
-                if (entry != NULL) {
-                    printToken(entry->type, entry->name, entry->index, row, col);
-                } else {
-                    processToken(buf, IDENTIFIER, row, col, Hashtable);
-                }
-            }
-            fseek(fp, -1, SEEK_CUR);
+    if (checkKeyword(buf)) {
+        HashEntry* entry = lookup(Hashtable, buf);
+        if (entry != NULL) {
+            printToken(entry->type, entry->name, entry->index, row, col);
+        } else {
+            processToken(buf, KEYWORD, row, col, Hashtable);
+        }
+    } else if (c == '(') {
+        HashEntry* entry = lookup(Hashtable, buf);
+        if (entry != NULL && strcmp(entry->type, "function") == 0) {
+            printToken(entry->type, entry->name, entry->index, row, col);
+        } else {
+            processToken(buf, IDENTIFIER, row, col, Hashtable);
+        }
+        fseek(fp, -1, SEEK_CUR);
+    } else {
+        HashEntry* entry = lookup(Hashtable, buf);
+        if (entry != NULL) {
+            printToken(entry->type, entry->name, entry->index, row, col);
+        } else {
+            processToken(buf, IDENTIFIER, row, col, Hashtable);
         }
     }
-    fclose(fp);
+    fseek(fp, -1, SEEK_CUR);
 }
 
 int main(int argc, char* argv[]) {
