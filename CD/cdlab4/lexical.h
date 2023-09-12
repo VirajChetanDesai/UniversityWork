@@ -192,7 +192,8 @@ void removeCommentsAndDirectives(const char *inputFileName, const char *outputFi
             } else if (!insideString) {
                 if (currentChar == '/' && prevChar == '/') {
                     insideSingleLineComment = 1;
-                    fputc(' ', outputFile); // Replace '//' with a space
+                    fseek(outputFile,-1,SEEK_CUR);
+                    fputc(' ', outputFile); 
                 } else if (currentChar == '/' && prevChar == '*') {
                     insideMultiLineComment = 1;
                 } else if (currentChar == '#') {

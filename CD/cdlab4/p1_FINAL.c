@@ -216,8 +216,7 @@ void lexicalAnalyser(const char* outputFileName, HashTable* Hashtable) {
                     if(c == '(' && checkKeyword(previous)){
                         insert(Hashtable, buf , Hashtable->index++, "function", "", "", "", previous);
                         printf("<%s,%d,%u,%u,%s>\n", "function", Hashtable->index - 1, row, col, previous);
-                    }
-                    processToken(buf, IDENTIFIER, row, col, Hashtable);
+                    }else processToken(buf, IDENTIFIER, row, col, Hashtable);
                 }
             }
             int j = 0;
@@ -231,21 +230,6 @@ void lexicalAnalyser(const char* outputFileName, HashTable* Hashtable) {
         }
     }
     fclose(fp);
-}
-
-
-void printHashTable(const HashTable* ht) {
-    printf("Hash Table Contents:\n");
-    for (int i = 0; i < TABLE_SIZE; ++i) {
-        HashEntry* entry = ht->table[i];
-        while (entry != NULL) {
-            printf("Index %d:\n", i);
-            printf("  Name: %s\n", entry->name);
-            printf("  Index: %d\n", entry->index);
-            printf("  Type: %s\n", entry->type);
-            entry = entry->next;
-        }
-    }
 }
 
 int main(int argc, char* argv[]) {
@@ -264,7 +248,7 @@ int main(int argc, char* argv[]) {
     if (extension != NULL) {
         *extension = '\0';
     }
-    strcat(outputFileName, ".out");
+    strcat(outputFileName, ".txt");
     HashTable *Hashtable = createHashTable(); 
     removeCommentsAndDirectives(inputFileName, outputFileName);
     lexicalAnalyser(outputFileName, Hashtable); 
